@@ -78,6 +78,8 @@ export type ProviderContext = {
 export type UsageProviderAdapter = {
   id: ProviderId;
   displayName: string;
+  /** Config key (e.g. "show_deepseek") toggling this adapter. When set and falsy in config, the adapter is skipped. */
+  configKey?: keyof UsageMonitorConfig;
   isAvailable(ctx: ProviderContext): boolean;
   fetchUsage(ctx: ProviderContext, signal: AbortSignal): Promise<StandardUsageProvider>;
 };
@@ -89,6 +91,7 @@ export type UsageMonitorConfig = {
   request_timeout_ms?: number;
   show_openai?: boolean;
   show_zai?: boolean;
+  show_deepseek?: boolean;
   show_details?: boolean;
   default_provider_collapsed?: boolean;
   debug?: boolean;
@@ -98,6 +101,8 @@ export type UsageMonitorConfig = {
   max_windows?: number;
   max_model_lines?: number;
   refresh_keybind?: string;
+  zai_organization_id?: string;
+  zai_project_id?: string;
 };
 
 export type RefreshGuard = {
