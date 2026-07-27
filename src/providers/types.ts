@@ -1,5 +1,7 @@
 export type ProviderId = string;
 
+export type ProviderVisibilityConfigKey = "show_openai" | "show_zai" | "show_deepseek";
+
 export type UsageSeverity = "normal" | "warning" | "critical" | "muted";
 
 export type UsageWindowKind =
@@ -78,8 +80,8 @@ export type ProviderContext = {
 export type UsageProviderAdapter = {
   id: ProviderId;
   displayName: string;
-  /** Config key (e.g. "show_deepseek") toggling this adapter. When set and falsy in config, the adapter is skipped. */
-  configKey?: keyof UsageMonitorConfig;
+  /** A false value excludes the adapter from rendering, credential discovery, and network requests. */
+  configKey?: ProviderVisibilityConfigKey;
   isAvailable(ctx: ProviderContext): boolean;
   fetchUsage(ctx: ProviderContext, signal: AbortSignal): Promise<StandardUsageProvider>;
 };

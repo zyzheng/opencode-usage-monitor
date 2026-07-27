@@ -660,6 +660,30 @@ describe("glm enterprise quota", () => {
 });
 
 describe("registry config gating", () => {
+  test("disabled providers are skipped before fetchUsage", async () => {
+    let fetchCount = 0;
+    const adapter: UsageProviderAdapter = {
+      id: "deepseek",
+      displayName: "deepseek",
+      configKey: "show_deepseek",
+      isAvailable: () => true,
+      fetchUsage: async () => {
+        fetchCount += 1;
+        return { id: "deepseek", displayName: "deepseek", status: "ready", windows: [] };
+      },
+    };
+    PROVIDER_ADAPTERS.splice(0, PROVIDER_ADAPTERS.length, adapter);
+
+    const result = await refreshAllAdapters(
+      makeCtx(),
+      { ...CONFIG_DEFAULTS, show_deepseek: false },
+      new AbortController().signal,
+    );
+
+    expect(fetchCount).toBe(0);
+    expect(result).toEqual({});
+  });
+
   test("show_deepseek=false hides deepseek adapter", () => {
     const ctx = makeCtx({}, { DEEPSEEK_API_KEY: "k", ZHIPU_API_KEY: "k2" });
     const active = getActiveAdapters(ctx, { ...CONFIG_DEFAULTS, show_deepseek: false });

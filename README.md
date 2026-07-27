@@ -132,6 +132,8 @@ Full documented shape:
 }
 ```
 
+The `show_openai`, `show_zai`, and `show_deepseek` flags control provider activation, not only visual rendering. Setting a flag to `false` prevents the plugin from discovering credentials or making network requests for that provider.
+
 Alternatively, add a `usage_monitor` section to `oh-my-openagent.json`. Dedicated `usage-monitor.json` values take precedence.
 
 ## Credentials
