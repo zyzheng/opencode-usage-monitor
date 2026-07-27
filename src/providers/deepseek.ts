@@ -61,8 +61,8 @@ export function normalizeDeepseekBalance(raw: unknown, nowMs: number = Date.now(
   return {
     id: "deepseek",
     displayName: "deepseek",
-    status: "ready",
-    ...(available ? {} : { statusText: "unavailable" }),
+    status: available ? "ready" : "partial",
+    ...(available ? {} : { statusText: "API access unavailable" }),
     windows: [window],
     additionalProperties: sanitizeAdditionalProperties({
       deepseekCurrency: cny.currency,

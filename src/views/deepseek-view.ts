@@ -1,6 +1,6 @@
 import type { StandardUsageProvider } from "../providers/types.js";
 import type { ProviderUsageView, UsageMetric } from "./types.js";
-import { metricSummary, statusView, toViewStatus, windowMetric, numberMetric } from "./common.js";
+import { metricSummary, statusView, stringMetric, toViewStatus, windowMetric, numberMetric } from "./common.js";
 
 export function deepseekProviderToView(provider: StandardUsageProvider): ProviderUsageView {
   const status = statusView(provider);
@@ -8,6 +8,7 @@ export function deepseekProviderToView(provider: StandardUsageProvider): Provide
 
   const currency = readString(provider.additionalProperties?.deepseekCurrency);
   const metrics = [
+    stringMetric("status", "status", provider.status === "partial" ? provider.statusText : undefined, 100, { compact: true, tone: "warn" }),
     ...provider.windows.map((window, index) => windowMetric(window, 90 - index)),
   ].filter((metric): metric is UsageMetric => metric !== undefined);
 

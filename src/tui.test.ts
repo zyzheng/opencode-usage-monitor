@@ -583,6 +583,19 @@ describe("deepseek balance provider", () => {
     expect(expanded).toContain("\u00a59.30");
   });
 
+  test("unavailable DeepSeek access stays visible without losing balance data", () => {
+    const fixture = { ...(deepseekFixture() as Record<string, unknown>), is_available: false };
+    const provider = normalizeDeepseekBalance(fixture, nowMs());
+    const view = providerToView(provider);
+
+    expect(provider.status).toBe("partial");
+    expect(provider.statusText).toBe("API access unavailable");
+    expect(provider.windows[0]?.currentValue).toBe(10.53);
+    expect(view.status).toBe("partial");
+    expect(view.summary).toContain("API access unavailable");
+    expect(view.metrics.some((metric) => metric.label === "balance")).toBe(true);
+  });
+
   test("adapter reports missing auth without a credential", async () => {
     await withoutUsageEnv(async () => {
       const provider = await deepseekUsageAdapter.fetchUsage(makeCtx({}, {}), new AbortController().signal);
